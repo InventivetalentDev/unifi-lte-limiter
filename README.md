@@ -36,5 +36,5 @@ it will check if the U-LTE is in failover mode, and then enable/disable the traf
 ### Run automatically
 setup a crontab to run `node index.js` or `run.sh` on whatever interval you like
 ```
-5 * * * * cd /home/user/unifi-lte-limiter && /bin/node index.js
+*/5 * * * * cd /home/user/unifi-lte-limiter && /bin/node index.js
 ```
