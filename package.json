@@ -1,0 +1,15 @@
+{
+  "name": "unifi-lte-speed-limiter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Haylee Schäfer",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-unifi": "^2.5.1"
+  }
+}
