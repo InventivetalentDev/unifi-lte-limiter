@@ -17,24 +17,23 @@ async function sleep(ms) {
         const loginData = await unifi.login(process.env.UI_USER, process.env.UI_PASS);
         console.log('login: ' + loginData);
 
-        // // GET SITE STATS
-        // const sites = await unifi.getSitesStats();
-        // console.log('getSitesStats: ' + sites[0].name + ':' + sites.length);
-        // console.log(JSON.stringify(sites));
+        if (process.env.DEBUG === 'true') {
+            // GET SITE SYSINFO
+            const sysinfo = await unifi.getSiteSysinfo();
+            console.log('getSiteSysinfo: ' + sysinfo.length);
+            console.log(JSON.stringify(sysinfo, null, 2));
+        }
 
-        // GET SITE SYSINFO
-        const sysinfo = await unifi.getSiteSysinfo();
-        console.log('getSiteSysinfo: ' + sysinfo.length);
-        console.log(JSON.stringify(sysinfo, null, 2));
-
-        console.log('\n')
         if (process.env.U_LTE_MAC === NULL_MAC) {
+            console.log('\n')
             console.log("U-LTE MAC not set, listing devices and exiting");
             await sleep(100);
 
             let devBasic = await unifi.getAccessDevicesBasic();
-            // console.log('getAccessDevicesBasic: ' + devBasic.length);
-            // console.log(JSON.stringify(devBasic, null, 2));
+            if (process.env.DEBUG === 'true') {
+                console.log('getAccessDevicesBasic: ' + devBasic.length);
+                console.log(JSON.stringify(devBasic, null, 2));
+            }
 
             devBasic.find(dev => {
                 console.log(dev.mac + ' ' + dev.model + ' ' + dev.name);
@@ -55,22 +54,17 @@ async function sleep(ms) {
         console.log('U-LTE MAC: ' + process.env.U_LTE_MAC);
         console.log("Getting U-LTE device info...");
         let dev = await unifi.getAccessDevices(process.env.U_LTE_MAC);
-        console.log('getAccessDevices: ' + dev.length);
-        console.log(JSON.stringify(dev, null, 2));
+        if (process.env.DEBUG === 'true') {
+            console.log('getAccessDevices: ' + dev.length);
+            console.log(JSON.stringify(dev, null, 2));
+        }
         if (dev.length === 0) {
             console.warn("U-LTE not found?!")
             return;
         }
         let info = dev[0];
         let failoverActive = info.lte_failover;
-
-        // let netConf = await unifi.getNetworkConf();
-        // console.log('getNetworkConf: ' + netConf.length);
-        // console.log(JSON.stringify(netConf, null, 2));
-        //
-        // let firewallRules = await unifi.getFirewallRules();
-        // console.log('firewallRules: ' + firewallRules.length);
-        // console.log(JSON.stringify(firewallRules, null, 2));
+        console.log(`LTE Failover active: ${failoverActive}`)
 
         console.log('\n')
         if (process.env.LIMIT_TRAFFIC_RULE_ID === NULL_ID) {
@@ -80,8 +74,10 @@ async function sleep(ms) {
 
         console.log("Finding limit traffic route...")
         let trafficRules = await unifi._request(`/v2/api/site/<SITE>/trafficrules`, null, 'GET');
-        console.log('trafficRules: ' + trafficRules.length);
-        console.log(JSON.stringify(trafficRules, null, 2));
+        if (process.env.DEBUG === 'true') {
+            console.log('trafficRules: ' + trafficRules.length);
+            console.log(JSON.stringify(trafficRules, null, 2));
+        }
 
         let limitTrafficRule = trafficRules.find(rule => rule._id === process.env.LIMIT_TRAFFIC_RULE_ID);
         if (!limitTrafficRule) {
@@ -111,16 +107,6 @@ async function sleep(ms) {
 
         console.log("All done!")
         await sleep(100);
-
-        // // GET CLIENT DEVICES
-        // const clientData = await unifi.getClientDevices();
-        // console.log('getClientDevices: ' + clientData.length);
-        // console.log(JSON.stringify(clientData));
-        //
-        // // GET ALL USERS EVER CONNECTED
-        // const usersData = await unifi.getAllUsers();
-        // console.log('getAllUsers: ' + usersData.length);
-        // console.log(JSON.stringify(usersData));
 
         // LOGOUT
         const logoutData = await unifi.logout();

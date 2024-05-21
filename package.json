@@ -5,9 +5,9 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Haylee Schäfer",
+  "author": "Haylee Schäfer <haylee@inventivetalent.org>",
   "license": "MIT",
-  "description": "",
+  "description": "Automatically toggle a traffic rule when LTE failover is active to avoid unnecessary traffic",
   "dependencies": {
     "dotenv": "^16.4.5",
     "node-unifi": "^2.5.1"
